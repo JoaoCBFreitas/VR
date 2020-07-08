@@ -1,0 +1,19 @@
+version: '3'
+services: 
+  ubuntu:
+    build: './'
+    container_name: auth
+    volumes:
+      - ubuntu:/home/code/
+    ports:
+      - '8080:8080'
+    networks:
+      - container-net
+
+volumes:
+  ubuntu:
+    driver: local
+networks:
+    container-net:
+
+

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<?php include ("finder.php");?>
+<html>
+
+<body>
+
+    <head>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+        <div>
+            <h1>List of files:</h1>
+            <ul><?php echo $thelist; ?></ul>
+            <form method="POST" action="/Logout">
+                <input class="w3-btn w3-teal" type="submit" value="Logout" />
+            </form>
+        </div>
+
+    </head>
+</body>
+
+</html>

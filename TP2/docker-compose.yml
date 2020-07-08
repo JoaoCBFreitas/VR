@@ -1,0 +1,73 @@
+version: '3'
+services: 
+  bd: 
+    image: postgres:latest
+    container_name: bd
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: 12345
+    volumes:
+       - data-postgres:/var/lib/postgresql/data 
+    ports:
+      - "5432:5432"
+    networks:
+       - Network1
+    restart: always
+  auth:
+    build: './docker/auths'
+    container_name: auth
+    volumes:
+      - data-authRedes:/var/lib/authRedes/data
+    ports:
+      - '5000:5000'
+    networks:
+      - Network1
+      - Network2
+      - Network3
+    restart: always
+    depends_on:
+      - bd
+  ftp:
+    build: './docker/ftp'
+    container_name: ftp
+    ports:
+      - "5050:5050"
+    volumes:
+      - http-vol:/usr/local/apache2
+    networks:
+      - Network2
+    environment:
+      PUBLICHOST: "localhost"
+      FTP_USER_NAME: username
+      FTP_USER_PASS: mypass
+      FTP_USER_HOME: /home/username
+    restart: always
+    depends_on:
+      - auth
+  http:
+    build: './docker/http'
+    container_name: http
+    ports:
+      - "8080:8080"
+    volumes:
+      - http-vol:/usr/local/apache2
+    networks:
+      - Network3
+    restart: always
+    depends_on:
+      - auth
+volumes:
+  data-postgres:
+    driver: local
+  data-authRedes:
+    driver: local
+  http-vol:
+    driver: local
+networks:
+  Network1:
+    driver: bridge
+  Network2:
+    driver: bridge
+  Network3:
+    driver: bridge

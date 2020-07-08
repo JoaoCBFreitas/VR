@@ -1,0 +1,39 @@
+
+install tools - docker ubuntu
+	apt update
+	apt install -y bash-completion software-properties-common npm sudo curl ssh git vim
+		
+	install java 8
+	
+
+download lithium - Daylight
+	wget https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.3.0-Lithium/distribution-karaf-0.3.0-Lithium.tar.gz
+	extract tar zxvf distribution-karaf-0.3.0-Lithium.tar.gz
+
+
+
+Install nodeJS
+	curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+	apt-get install nodejs
+
+#troca server ip pelo teu IP
+clone openflow manager app
+	git clone https://github.com/CiscoDevNet/OpenDaylight-Openflow-App.git
+	sed -i 's/localhost/<server_ip>/g' /OpenDaylight-Openflow-App/ofm/src/common/config/env.module.js  
+	npm install -g grunt-cli
+
+cd distribution-karaf-0.3.0-Lithium
+./bin/karaf
+feature:install odl-restconf-all odl-openflowplugin-all odl-l2switch-all odl-mdsal-all odl-yangtools-common
+
+cd OpenDaylight-Openflow-App
+grunt
+
+ovs-vsctl del-controller br0
+ovs-vsctl set-controller br0 tcp:192.168.3.2:6633
+ovs-vsctl set Bridge br0 protocols=OpenFlow10,OpenFlow11,OpenFlow12,OpenFlow13
+ovs-vsctl set Bridge br0 stp_enable=true
+ovs-vsctl list controller
+
+
+
